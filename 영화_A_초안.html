@@ -1,0 +1,348 @@
+{\rtf1\ansi\ansicpg949\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0\c84706;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+```html\
+<!DOCTYPE html>\
+<html lang="ko">\
+<head>\
+<meta charset="UTF-8">\
+<meta name="viewport" content="width=device-width, initial-scale=1.0">\
+<title>\uc0\u45236 \u44032  \u49324 \u46993 \u54616 \u45716  \u50689 \u54868 </title>\
+<style>\
+  * \{ box-sizing: border-box; margin: 0; padding: 0; \}\
+  body \{\
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;\
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);\
+    color: #fff;\
+    min-height: 100vh;\
+    padding: 20px;\
+  \}\
+  h1 \{\
+    text-align: center;\
+    font-size: 2.2rem;\
+    margin-bottom: 24px;\
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);\
+  \}\
+  .container \{ max-width: 1000px; margin: 0 auto; \}\
+\
+  /* \uc0\u49345 \u45800  \u51077 \u47141  \u50689 \u50669  */\
+  .top-bar \{\
+    display: flex;\
+    flex-wrap: wrap;\
+    gap: 8px;\
+    margin-bottom: 16px;\
+  \}\
+  .top-bar input \{\
+    flex: 1;\
+    min-width: 180px;\
+    padding: 10px 14px;\
+    border: none;\
+    border-radius: 8px;\
+    font-size: 1rem;\
+  \}\
+  .top-bar button \{\
+    padding: 10px 18px;\
+    border: none;\
+    border-radius: 8px;\
+    font-size: 1rem;\
+    font-weight: bold;\
+    cursor: pointer;\
+    background: #4a90e2;\
+    color: #fff;\
+    transition: opacity 0.2s;\
+  \}\
+  .top-bar button:hover \{ opacity: 0.85; \}\
+  .reset-btn \{ background: #e74c3c !important; \}\
+\
+  /* \uc0\u50504 \u45236  \u47700 \u49884 \u51648  */\
+  .message \{\
+    min-height: 24px;\
+    margin-bottom: 12px;\
+    text-align: center;\
+    color: #ffd93d;\
+    font-size: 0.95rem;\
+  \}\
+\
+  /* \uc0\u46321 \u44553  \u49440 \u53469  \u48260 \u53948  */\
+  .grade-buttons \{\
+    display: flex;\
+    gap: 8px;\
+    margin-bottom: 20px;\
+    flex-wrap: wrap;\
+    justify-content: center;\
+  \}\
+  .grade-buttons button \{\
+    padding: 8px 20px;\
+    border: 2px solid transparent;\
+    border-radius: 8px;\
+    font-size: 1rem;\
+    font-weight: bold;\
+    cursor: pointer;\
+    color: #fff;\
+    transition: all 0.2s;\
+  \}\
+  .grade-buttons button.active \{\
+    border-color: #fff;\
+    transform: scale(1.1);\
+    box-shadow: 0 0 12px rgba(255,255,255,0.5);\
+  \}\
+  .btn-S \{ background: #ff4757; \}\
+  .btn-A \{ background: #ffa502; \}\
+  .btn-B \{ background: #2ed573; \}\
+  .btn-C \{ background: #1e90ff; \}\
+  .btn-U \{ background: #747d8c; \}\
+\
+  /* \uc0\u54000 \u50612 \u48372 \u46300  */\
+  .tier \{\
+    display: flex;\
+    margin-bottom: 10px;\
+    border-radius: 10px;\
+    overflow: hidden;\
+    min-height: 90px;\
+  \}\
+  .tier-label \{\
+    width: 70px;\
+    display: flex;\
+    align-items: center;\
+    justify-content: center;\
+    font-size: 2rem;\
+    font-weight: bold;\
+    color: #fff;\
+    flex-shrink: 0;\
+  \}\
+  .tier-S .tier-label \{ background: #ff4757; \}\
+  .tier-A .tier-label \{ background: #ffa502; \}\
+  .tier-B .tier-label \{ background: #2ed573; \}\
+  .tier-C .tier-label \{ background: #1e90ff; \}\
+\
+  .tier-cards \{\
+    flex: 1;\
+    display: flex;\
+    flex-wrap: wrap;\
+    gap: 8px;\
+    padding: 10px;\
+    background: rgba(255,255,255,0.08);\
+    min-height: 90px;\
+  \}\
+  .tier-cards.drag-over \{\
+    background: rgba(255,255,255,0.2);\
+  \}\
+\
+  /* \uc0\u48120 \u48516 \u47448  \u50689 \u50669  */\
+  .unranked-section \{\
+    margin-top: 24px;\
+    background: rgba(255,255,255,0.05);\
+    border: 2px dashed rgba(255,255,255,0.3);\
+    border-radius: 10px;\
+    padding: 14px;\
+  \}\
+  .unranked-section h2 \{\
+    margin-bottom: 10px;\
+    font-size: 1.2rem;\
+    color: #ccc;\
+  \}\
+  .unranked-cards \{\
+    display: flex;\
+    flex-wrap: wrap;\
+    gap: 8px;\
+    min-height: 70px;\
+  \}\
+  .unranked-cards.drag-over \{\
+    background: rgba(255,255,255,0.1);\
+    border-radius: 6px;\
+  \}\
+\
+  /* \uc0\u50689 \u54868  \u52852 \u46300  */\
+  .card \{\
+    background: #fff;\
+    color: #222;\
+    padding: 8px 12px;\
+    border-radius: 6px;\
+    font-size: 0.95rem;\
+    font-weight: 600;\
+    cursor: grab;\
+    display: flex;\
+    align-items: center;\
+    gap: 8px;\
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);\
+    user-select: none;\
+  \}\
+  .card:active \{ cursor: grabbing; \}\
+  .card.dragging \{ opacity: 0.4; \}\
+  .card .delete \{\
+    background: #e74c3c;\
+    color: #fff;\
+    border: none;\
+    border-radius: 50%;\
+    width: 20px;\
+    height: 20px;\
+    font-size: 0.75rem;\
+    cursor: pointer;\
+    display: flex;\
+    align-items: center;\
+    justify-content: center;\
+  \}\
+\
+  @media (max-width: 500px) \{\
+    h1 \{ font-size: 1.6rem; \}\
+    .tier-label \{ width: 50px; font-size: 1.4rem; \}\
+  \}\
+</style>\
+</head>\
+<body>\
+  <div class="container">\
+    <h1>\uc0\u55356 \u57260  \u45236 \u44032  \u49324 \u46993 \u54616 \u45716  \u50689 \u54868 </h1>\
+\
+    <div class="top-bar">\
+      <input type="text" id="movieInput" placeholder="\uc0\u50689 \u54868  \u51228 \u47785 \u51012  \u51077 \u47141 \u54616 \u49464 \u50836 " />\
+      <button id="addBtn">\uc0\u52628 \u44032 </button>\
+      <button id="resetBtn" class="reset-btn">\uc0\u52376 \u51020 \u51004 \u47196 </button>\
+    </div>\
+\
+    <div class="message" id="message"></div>\
+\
+    <div class="grade-buttons">\
+      <button class="btn-S" data-grade="S">S \uc0\u46321 \u44553 </button>\
+      <button class="btn-A" data-grade="A">A \uc0\u46321 \u44553 </button>\
+      <button class="btn-B" data-grade="B">B \uc0\u46321 \u44553 </button>\
+      <button class="btn-C" data-grade="C">C \uc0\u46321 \u44553 </button>\
+      <button class="btn-U" data-grade="U">\uc0\u48120 \u48516 \u47448 </button>\
+    </div>\
+\
+    <div class="tier tier-S">\
+      <div class="tier-label">S</div>\
+      <div class="tier-cards" data-tier="S"></div>\
+    </div>\
+    <div class="tier tier-A">\
+      <div class="tier-label">A</div>\
+      <div class="tier-cards" data-tier="A"></div>\
+    </div>\
+    <div class="tier tier-B">\
+      <div class="tier-label">B</div>\
+      <div class="tier-cards" data-tier="B"></div>\
+    </div>\
+    <div class="tier tier-C">\
+      <div class="tier-label">C</div>\
+      <div class="tier-cards" data-tier="C"></div>\
+    </div>\
+\
+    <div class="unranked-section">\
+      <h2>\uc0\u55357 \u56550  \u48120 \u48516 \u47448  \u50689 \u54868 </h2>\
+      <div class="unranked-cards" data-tier="U"></div>\
+    </div>\
+  </div>\
+\
+<script>\
+  // ===== \uc0\u49345 \u49688  =====\
+  const STORAGE_KEY = 'movieTierList';\
+  const MAX_PER_TIER = 20;\
+  const INITIAL_MOVIES = [\
+    '\uc0\u44592 \u49373 \u52649 ', '\u51064 \u53552 \u49828 \u53588 \u46972 ', '\u46972 \u46972 \u47004 \u46300 ', '\u49468 \u44284  \u52824 \u55176 \u47196 \u51032  \u54665 \u48169 \u48520 \u47749 ',\
+    '\uc0\u50612 \u48292 \u51256 \u49828 : \u50644 \u46300 \u44172 \u51076 ', '\u48276 \u51396 \u46020 \u49884 ', '\u53440 \u51060 \u53440 \u45769 ', '\u53664 \u51060  \u49828 \u53664 \u47532 ',\
+    '\uc0\u50500 \u48148 \u53440 ', '\u48521 \u51008  \u49688 \u49688 \u48173 '\
+  ];\
+\
+  // ===== \uc0\u49345 \u53468  =====\
+  // movies: \{ "\uc0\u51228 \u47785 ": "S"|"A"|"B"|"C"|"U" \}\
+  let movies = \{\};\
+  let selectedGrade = null; // \uc0\u46321 \u44553  \u48260 \u53948  \u49440 \u53469  \u49345 \u53468 \
+\
+  // ===== \uc0\u51200 \u51109 /\u48520 \u47084 \u50724 \u44592  =====\
+  function load() \{\
+    const saved = localStorage.getItem(STORAGE_KEY);\
+    if (saved) \{\
+      try \{ movies = JSON.parse(saved); return; \}\
+      catch(e) \{ /* \uc0\u47924 \u49884 \u54616 \u44256  \u52488 \u44592 \u54868  */ \}\
+    \}\
+    // \uc0\u52376 \u51020  \u49892 \u54665 : \u52488 \u44592  \u50689 \u54868  10\u44060 \u47484  \u48120 \u48516 \u47448 \u47196 \
+    movies = \{\};\
+    INITIAL_MOVIES.forEach(title => \{ movies[title] = 'U'; \});\
+    save();\
+  \}\
+  function save() \{\
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(movies));\
+  \}\
+\
+  // ===== \uc0\u47700 \u49884 \u51648  \u54364 \u49884  =====\
+  let messageTimer = null;\
+  function showMessage(text) \{\
+    const el = document.getElementById('message');\
+    el.textContent = text;\
+    clearTimeout(messageTimer);\
+    messageTimer = setTimeout(() => \{ el.textContent = ''; \}, 2500);\
+  \}\
+\
+  // ===== \uc0\u47116 \u45908 \u47553  =====\
+  function render() \{\
+    ['S','A','B','C','U'].forEach(tier => \{\
+      const container = document.querySelector(`[data-tier="$\{tier\}"]`);\
+      container.innerHTML = '';\
+      // \uc0\u54644 \u45817  \u54000 \u50612 \u51032  \u50689 \u54868  \u44032 \u51256 \u50752  \u44032 \u45208 \u45796 \u49692  \u51221 \u47148 \
+      const titles = Object.keys(movies)\
+        .filter(t => movies[t] === tier)\
+        .sort((a, b) => a.localeCompare(b, 'ko'));\
+      titles.forEach(title => \{\
+        container.appendChild(createCard(title));\
+      \});\
+    \});\
+  \}\
+\
+  function createCard(title) \{\
+    const card = document.createElement('div');\
+    card.className = 'card';\
+    card.draggable = true;\
+    card.dataset.title = title;\
+\
+    const text = document.createElement('span');\
+    text.textContent = title;\
+    card.appendChild(text);\
+\
+    const delBtn = document.createElement('button');\
+    delBtn.className = 'delete';\
+    delBtn.textContent = '\uc0\u10005 ';\
+    delBtn.title = '\uc0\u49325 \u51228 ';\
+    delBtn.addEventListener('click', (e) => \{\
+      e.stopPropagation();\
+      delete movies[title];\
+      save();\
+      render();\
+    \});\
+    card.appendChild(delBtn);\
+\
+    // \uc0\u46300 \u47000 \u44536 \
+    card.addEventListener('dragstart', (e) => \{\
+      card.classList.add('dragging');\
+      e.dataTransfer.setData('text/plain', title);\
+    \});\
+    card.addEventListener('dragend', () => \{\
+      card.classList.remove('dragging');\
+    \});\
+\
+    // \uc0\u52852 \u46300  \u53364 \u47533  \u8594  \u49440 \u53469 \u46108  \u46321 \u44553 \u51004 \u47196  \u51060 \u46041 \
+    card.addEventListener('click', () => \{\
+      if (selectedGrade) \{\
+        moveMovie(title, selectedGrade);\
+      \}\
+    \});\
+\
+    return card;\
+  \}\
+\
+  // ===== \uc0\u50689 \u54868  \u51060 \u46041  (\u54000 \u50612  \u48320 \u44221 ) =====\
+  function moveMovie(title, targetTier) \{\
+    if (movies[title] === targetTier) return; // \uc0\u51060 \u48120  \u44057 \u51008  \u54000 \u50612 \
+    // \uc0\u44060 \u49688  \u51228 \u54620  \u54869 \u51064  (\u48120 \u48516 \u47448 \u45716  \u51228 \u54620  \u50630 \u51020 )\
+    if (targetTier !== 'U') \{\
+      const count = Object.values(movies).filter(t => t === targetTier).length;\
+      if (count >= MAX_PER_TIER) \{\
+        showMessage(`\uc0\u51060  \u54000 \u50612 \u45716  \u52572 \u45824  $\{MAX_PER_TIER\}\u44060 \u44620 \u51648 \u47564  \u45812 \u51012  \u49688  \u51080 \u49845 \u45768 \u45796 `);\
+        return;\
+      \}\
+    \}\
+    movies[title] =}
