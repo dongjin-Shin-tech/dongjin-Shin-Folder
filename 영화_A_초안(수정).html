@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>영화 티어리스트</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+      background: #1a1a2e;
+      color: #eaeaea;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffd369;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .controls input[type="text"] {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      width: 220px;
+      font-size: 14px;
+    }
+    .controls button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #0f3460;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .controls button:hover { background: #16509e; }
+    .controls button.reset { background: #8c2f39; }
+    .controls button.reset:hover { background: #b03a46; }
+
+    .grade-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .grade-buttons button {
+      padding: 8px 16px;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #1a1a2e;
+    }
+    .grade-buttons button[data-grade="S"] { background: #ff7675; }
+    .grade-buttons button[data-grade="A"] { background: #fdcb6e; }
+    .grade-buttons button[data-grade="B"] { background: #55efc4; }
+    .grade-buttons button[data-grade="C"] { background: #74b9ff; }
+    .grade-buttons button[data-grade="U"] { background: #b2bec3; }
+    .grade-buttons button.active {
+      border-color: #fff;
+      box-shadow: 0 0 8px #fff;
+    }
+
+    .message {
+      text-align: center;
+      min-height: 22px;
+      margin-bottom: 15px;
+      color: #ffd369;
+      font-size: 14px;
+    }
+
+    .board { max-width: 900px; margin: 0 auto; }
+    .tier {
+      display: flex;
+      align-items: stretch;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      min-height: 80px;
+    }
+    .tier-label {
+      width: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: bold;
+      color: #1a1a2e;
+    }
+    .tier-S .tier-label { background: #ff7675; }
+    .tier-A .tier-label { background: #fdcb6e; }
+    .tier-B .tier-label { background: #55efc4; }
+    .tier-C .tier-label { background: #74b9ff; }
+
+    .tier-cards, .unranked-cards {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      background: #16213e;
+      align-content: flex-start;
+    }
+    .tier-cards.drag-over, .unranked-cards.drag-over {
+      background: #0f3460;
+      outline: 2px dashed #ffd369;
+    }
+
+    .unranked-section { margin-top: 20px; max-width: 900px; margin-left: auto; margin-right: auto; }
+    .unranked-section h2 { margin-bottom: 8px; color: #ffd369; }
+    .unranked-cards { border-radius: 8px; min-height: 80px; }
+
+    .card {
+      position: relative;
+      background: #e0e0e0;
+      color: #1a1a2e;
+      padding: 10px 28px 10px 12px;
+      border-radius: 6px;
+      cursor: grab;
+      font-size: 14px;
+      user-select: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .card.dragging { opacity: 0.5; }
+    .card .delete {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      background: transparent;
+      border: none;
+      color: #8c2f39;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎬 영화 티어리스트</h1>
+
+  <div class="controls">
+    <input type="text" id="movieInput" placeholder="영화 제목 입력">
+    <button id="addBtn">추가</button>
+    <button class="reset" id="resetBtn">초기화</button>
+  </div>
+
+  <div class="grade-buttons">
+    <button data-grade="S">S</button>
+    <button data-grade="A">A</button>
+    <button data-grade="B">B</button>
+    <button data-grade="C">C</button>
+    <button data-grade="U">미분류</button>
+  </div>
+
+  <div class="message" id="message">드래그하거나, 등급 버튼을 누른 뒤 영화를 클릭하세요.</div>
+
+  <div class="board">
+    <div class="tier tier-S">
+      <div class="tier-label">S</div>
+      <div class="tier-cards" data-tier="S"></div>
+    </div>
+    <div class="tier tier-A">
+      <div class="tier-label">A</div>
+      <div class="tier-cards" data-tier="A"></div>
+    </div>
+    <div class="tier tier-B">
+      <div class="tier-label">B</div>
+      <div class="tier-cards" data-tier="B"></div>
+    </div>
+    <div class="tier tier-C">
+      <div class="tier-label">C</div>
+      <div class="tier-cards" data-tier="C"></div>
+    </div>
+  </div>
+
+  <div class="unranked-section">
+    <h2>미분류</h2>
+    <div class="unranked-cards" data-tier="U"></div>
+  </div>
+
+  <script>
+    // ===== 초기 데이터 =====
+    const DEFAULT_MOVIES = [
+      "기생충","인터스텔라","라라랜드","센과 치히로의 행방불명",
+      "어벤져스: 엔드게임","범죄도시","타이타닉","토이 스토리",
+      "아바타","붉은 수수밭"
+    ];
+
+    // localStorage에서 불러오거나 기본값 사용
+    let movies = JSON.parse(localStorage.getItem("movies")) ||
+      DEFAULT_MOVIES.map(t => ({ title: t, tier: "U" }));
+
+    let selectedGrade = null;   // 현재 선택된 등급 버튼
+    let draggingTitle = null;   // 드래그 중인 카드 제목
+
+    const messageEl = document.getElementById("message");
+
+    function save() {
+      localStorage.setItem("movies", JSON.stringify(movies));
+    }
+
+    function showMessage(msg) {
+      messageEl.textContent = msg;
+    }
+
+    // ===== 화면 그리기 =====
+    function render() {
+      // 모든 영역 비우기
+      document.querySelectorAll("[data-tier]").forEach(el => el.innerHTML = "");
+
+      movies.forEach((movie, idx) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.draggable = true;
+        card.textContent = movie.title;
+
+        // 삭제 버튼
+        const del = document.createElement("button");
+        del.className = "delete";
+        del.textContent = "×";
+        del.onclick = (e) => {
+          e.stopPropagation();        // 카드 클릭 이벤트와 분리
+          movies.splice(idx, 1);
+          save(); render();
+        };
+        card.appendChild(del);
+
+        // 등급 버튼 선택 후 카드 클릭 → 그 등급으로 이동
+        card.onclick = () => {
+          if (selectedGrade) {
+            movie.tier = selectedGrade;
+            save(); render();
+          }
+        };
+
+        // 드래그 시작/끝
+        card.ondragstart = () => {
+          draggingTitle = movie.title;
+          card.classList.add("dragging");
+        };
+        card.ondragend = () => card.classList.remove("dragging");
+
+        // 알맞은 티어 영역에 넣기
+        document.querySelector(`[data-tier="${movie.tier}"]`).appendChild(card);
+      });
+    }
+
+    // ===== 드래그 앤 드롭 영역 설정 =====
+    document.querySelectorAll("[data-tier]").forEach(zone => {
+      zone.ondragover = (e) => { e.preventDefault(); zone.classList.add("drag-over"); };
+      zone.ondragleave = () => zone.classList.remove("drag-over");
+      zone.ondrop = () => {
+        zone.classList.remove("drag-over");
+        const m = movies.find(mv => mv.title === draggingTitle);
+        if (m) { m.tier = zone.dataset.tier; save(); render(); }
+      };
+    });
+
+    // ===== 등급 버튼 토글 =====
+    document.querySelectorAll(".grade-buttons button").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".grade-buttons button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedGrade = btn.dataset.grade;
+        showMessage(`"${selectedGrade === "U" ? "미분류" : selectedGrade + "등급"}" 선택됨 - 영화를 클릭하세요.`);
+      };
+    });
+
+    // ===== 영화 추가 =====
+    const input = document.getElementById("movieInput");
+    function addMovie() {
+      const title = input.value.trim();
+      if (!title) { showMessage("영화 제목을 입력하세요."); return; }
+      if (movies.some(m => m.title === title)) {
+        showMessage("이미 있는 영화입니다.");
+        return;
+      }
+      movies.push({ title, tier: "U" });
+      input.value = "";
+      save(); render();
+      showMessage(`"${title}" 추가됨 (미분류).`);
+    }
+    document.getElementById("addBtn").onclick = addMovie;
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") addMovie(); });
+
+    // ===== 초기화 =====
+    document.getElementById("resetBtn").onclick = () => {
+      if (confirm("정말 초기 상태로 되돌릴까요? (추가/등급 기록이 모두 사라집니다)")) {
+        movies = DEFAULT_MOVIES.map(t => ({ title: t, tier: "U" }));
+        save(); render();
+        showMessage("초기 상태로 되돌렸습니다.");
+      }
+    };
+
+    // ===== 첫 렌더링 =====
+    render();
+  </script>
+</body>
+</html>
